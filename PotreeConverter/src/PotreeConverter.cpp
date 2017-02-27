@@ -121,6 +121,8 @@ void PotreeConverter::prepare(){
 			pointAttributes.add(PointAttribute::INTENSITY);
 		}else if(attribute == "CLASSIFICATION"){
 			pointAttributes.add(PointAttribute::CLASSIFICATION);
+        }else if (attribute == "TIME"){
+            pointAttributes.add (PointAttribute::TIME);
 		}else if(attribute == "NORMAL"){
 			pointAttributes.add(PointAttribute::NORMAL_OCT16);
 		}
