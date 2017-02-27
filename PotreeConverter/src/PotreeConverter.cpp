@@ -139,8 +139,9 @@ AABB PotreeConverter::calculateAABB(){
 			PointReader *reader = createPointReader(source, pointAttributes);
 			
 			AABB lAABB = reader->getAABB();
+            lAABB.shift (globalShift);
 			aabb.update(lAABB.min);
-			aabb.update(lAABB.max);
+			aabb.update(lAABB.max);            
 
 			reader->close();
 			delete reader;
@@ -364,14 +365,14 @@ void PotreeConverter::convert(){
 			fs::remove_all(workDir + "/data");
 			fs::remove_all(workDir + "/temp");
 			fs::remove(workDir + "/cloud.js");
-			writer = new PotreeWriter(this->workDir, aabb, spacing, maxDepth, scale, outputFormat, pointAttributes, quality);
+			writer = new PotreeWriter(this->workDir, globalShift, aabb, spacing, maxDepth, scale, outputFormat, pointAttributes, quality);
 			writer->setProjection(this->projection);
 		}else if(storeOption == StoreOption::INCREMENTAL){
 			writer = new PotreeWriter(this->workDir, quality);
 			writer->loadStateFromDisk();
 		}
 	}else{
-		writer = new PotreeWriter(this->workDir, aabb, spacing, maxDepth, scale, outputFormat, pointAttributes, quality);
+		writer = new PotreeWriter(this->workDir, globalShift, aabb, spacing, maxDepth, scale, outputFormat, pointAttributes, quality);
 		writer->setProjection(this->projection);
 	}
 
@@ -388,7 +389,9 @@ void PotreeConverter::convert(){
 
 		PointReader *reader = createPointReader(source, pointAttributes);
 
-		boundingBoxes.push_back(reader->getAABB());
+        AABB bb = reader->getAABB ();
+        bb.shift (this->globalShift);
+		boundingBoxes.push_back(bb);
 		numPoints.push_back(reader->numPoints());
 		sourceFilenames.push_back(fs::path(source).filename().string());
 
@@ -404,6 +407,7 @@ void PotreeConverter::convert(){
 			pointsProcessed++;
 
 			Point p = reader->getPoint();
+            p.shift (globalShift);
 			writer->add(p);
 
 			if((pointsProcessed % (1'000'000)) == 0){

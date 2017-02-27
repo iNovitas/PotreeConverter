@@ -68,6 +68,12 @@ public:
 		size = max - min;
 	}
 
+    void shift (const Vector3<double> &shift)
+    {
+        min = min - shift;
+        max = max - shift;
+    }
+
 	friend ostream &operator<<( ostream &output,  const AABB &value ){ 
 		output << "min: " << value.min << endl;
 		output << "max: " << value.max << endl;

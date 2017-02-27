@@ -46,6 +46,11 @@ public:
 		return output;            
 	}
 
+    void shift (const Vector3<double> &shift)
+    {
+        position = position - shift;
+    }
+
 };
 
 }

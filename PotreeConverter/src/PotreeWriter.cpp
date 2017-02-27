@@ -467,9 +467,9 @@ PotreeWriter::PotreeWriter(string workDir, ConversionQuality quality){
 	this->quality = quality;
 }
 
-PotreeWriter::PotreeWriter(string workDir, AABB aabb, float spacing, int maxDepth, double scale, OutputFormat outputFormat, PointAttributes pointAttributes, ConversionQuality quality){
+PotreeWriter::PotreeWriter(string workDir, Vector3<double> globalShift, AABB aabb, float spacing, int maxDepth, double scale, OutputFormat outputFormat, PointAttributes pointAttributes, ConversionQuality quality){
 	this->workDir = workDir;
-	this->aabb = aabb;
+    this->aabb = aabb;
 	this->spacing = spacing;
 	this->scale = scale;
 	this->maxDepth = maxDepth;
@@ -491,7 +491,8 @@ PotreeWriter::PotreeWriter(string workDir, AABB aabb, float spacing, int maxDept
 	}
 
 	cloudjs.outputFormat = outputFormat;
-	cloudjs.boundingBox = aabb;
+    cloudjs.globalShift = globalShift;
+    cloudjs.boundingBox = aabb;
 	cloudjs.octreeDir = "data";
 	cloudjs.spacing = spacing;
 	cloudjs.version = "1.7";

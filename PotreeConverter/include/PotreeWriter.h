@@ -118,7 +118,7 @@ public:
 
 	PotreeWriter(string workDir, ConversionQuality quality);
 
-	PotreeWriter(string workDir, AABB aabb, float spacing, int maxDepth, double scale, OutputFormat outputFormat, PointAttributes pointAttributes, ConversionQuality quality);
+	PotreeWriter(string workDir, Vector3<double> globalShift, AABB aabb, float spacing, int maxDepth, double scale, OutputFormat outputFormat, PointAttributes pointAttributes, ConversionQuality quality);
 
 	~PotreeWriter(){
 		close();

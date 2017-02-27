@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <vector>
 
 using std::ostream;
 #ifndef _MSC_VER
@@ -28,11 +29,18 @@ public:
 		this->z = z;
 	}
 
-	Vector3(T value){
+    Vector3(T value){
 		this->x = value;
 		this->y = value;
 		this->z = value;
 	}
+
+    Vector3(const std::vector<T> &v)
+    {
+        this->x = v [0];
+        this->y = v [1];
+        this->z = v [2];
+    }
 
 	Vector3(const Vector3<T> &other)
 		:x(other.x), y(other.y), z(other.z)

@@ -44,6 +44,7 @@ public:
 
 	string version;
 	string octreeDir = "data";
+    Vector3<double> globalShift;
 	AABB boundingBox;
 	AABB tightBoundingBox;
 	OutputFormat outputFormat;
@@ -64,6 +65,7 @@ public:
 		Value &vVersion = d["version"];
 		Value &vOctreeDir = d["octreeDir"];
 		Value &vPoints = d["points"];
+        Value &vGlobalShift = d["globalShift"];
 		Value &vBoundingBox = d["boundingBox"];
 		Value &vTightBoundingBox = d["tightBoundingBox"];
 		Value &vPointAttributes = d["pointAttributes"];
@@ -80,6 +82,8 @@ public:
 			Value &vProjection = d["projection"];
 			projection = vProjection.GetString();
 		}
+
+        globalShift = Vector3<double>(vGlobalShift ["dx"].GetDouble (), vBoundingBox ["dx"].GetDouble (), vBoundingBox ["dx"].GetDouble ());
 
 		numAccepted = vPoints.GetInt64();
 		boundingBox = AABB(
@@ -124,6 +128,12 @@ public:
 		Value version(this->version.c_str(), (rapidjson::SizeType)this->version.size());
 		Value octreeDir("data");
 		Value projection(this->projection.c_str(), (rapidjson::SizeType)this->projection.size());
+        Value globalShift (rapidjson::kObjectType);
+        {
+            globalShift.AddMember ("dx", this->globalShift.x, d.GetAllocator ());
+            globalShift.AddMember ("dy", this->globalShift.y, d.GetAllocator ());
+            globalShift.AddMember ("dz", this->globalShift.z, d.GetAllocator ());
+        }
 		Value boundingBox(rapidjson::kObjectType);
 		{
 			//Value min(rapidjson::kArrayType);
@@ -191,6 +201,7 @@ public:
 		d.AddMember("octreeDir", octreeDir, d.GetAllocator());
 		d.AddMember("projection", projection, d.GetAllocator());
 		d.AddMember("points", (uint64_t)numAccepted, d.GetAllocator());
+        d.AddMember ("globaShift", globalShift, d.GetAllocator ());
 		d.AddMember("boundingBox", boundingBox, d.GetAllocator());
 		d.AddMember("tightBoundingBox", tightBoundingBox, d.GetAllocator());
 		d.AddMember("pointAttributes", pointAttributes, d.GetAllocator());
