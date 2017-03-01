@@ -52,8 +52,9 @@ struct Arguments{
 	StoreOption storeOption = StoreOption::ABORT_IF_EXISTS;
 	vector<string> source;
 	string outdir;
+    double unitScale;
     vector<double> globalShift;
-	float spacing;
+    float spacing;
 	int levels;
 	string format;
 	string outFormatString;
@@ -88,7 +89,8 @@ Arguments parseArguments(int argc, char **argv){
 		("help,h", "prints usage")
 		("generate-page,p", po::value<string>(&a.pageName), "Generates a ready to use web page with the given name.")
 		("outdir,o", po::value<string>(&a.outdir), "output directory") 
-        ("global-shift,g", po::value<std::vector<double> >()->multitoken(), "Global shift of coordinates to avoid digit overflow. Default is (0,0,0).")
+        ("unit-scale,u", po::value<double> (&a.unitScale), "Scale applied to coordinates to switch between different units. Default is 1.")
+        ("global-shift,g", po::value<std::vector<double> >()->multitoken(), "Global shift of coordinates (after scaling!) to avoid digit overflow. Default is (0,0,0).")        
 		("spacing,s", po::value<float>(&a.spacing), "Distance between points at root level. Distance halves each level.") 
 		("spacing-by-diagonal-fraction,d", po::value<int>(&a.diagonalFraction), "Maximum number of points on the diagonal in the first level (sets spacing). spacing = diagonal / value")
 		("levels,l", po::value<int>(&a.levels), "Number of levels that will be generated. 0: only root, 1: root and its children, ...")
@@ -96,7 +98,7 @@ Arguments parseArguments(int argc, char **argv){
 		("color-range", po::value<std::vector<double> >()->multitoken(), "")
 		("intensity-range", po::value<std::vector<double> >()->multitoken(), "")
 		("output-format", po::value<string>(&a.outFormatString), "Output format can be BINARY, LAS or LAZ. Default is BINARY")
-		("output-attributes,a", po::value<std::vector<std::string> >()->multitoken(), "can be any combination of RGB, INTENSITY, TIME and CLASSIFICATION. Default is RGB.")
+		("output-attributes,a", po::value<std::vector<std::string> >()->multitoken(), "can be any combination of RGB, INTENSITY, TIMESTAMP and CLASSIFICATION. Default is RGB.")
 		("scale", po::value<double>(&a.scale), "Scale of the X, Y, Z coordinate in LAS and LAZ files.")
 		("aabb", po::value<string>(&a.aabbValuesString), "Bounding cube as \"minX minY minZ maxX maxY maxZ\". If not provided it is automatically computed")
 		("incremental", "Add new points to existing conversion")
@@ -110,7 +112,7 @@ Arguments parseArguments(int argc, char **argv){
 		("description", po::value<string>(&a.description), "Description to be shown in the page.")
 		("edl-enabled", "Enable Eye-Dome-Lighting.")
 		("show-skybox", "")
-		("material", po::value<string>(&a.material), "RGB, ELEVATION, INTENSITY, INTENSITY_GRADIENT, RETURN_NUMBER, SOURCE, TIME, LEVEL_OF_DETAIL");
+		("material", po::value<string>(&a.material), "RGB, ELEVATION, INTENSITY, INTENSITY_GRADIENT, RETURN_NUMBER, SOURCE, TIMESTAMP, LEVEL_OF_DETAIL");
 	po::positional_options_description p; 
 	p.add("source", -1); 
 
@@ -241,6 +243,7 @@ Arguments parseArguments(int argc, char **argv){
 	// set default parameters 
 	fs::path pSource(a.source[0]);
 	a.outdir = vm.count("outdir") ? vm["outdir"].as<string>() : pSource.generic_string() + "_converted";
+    if(!vm.count ("unit-scale")) a.unitScale = 1.;
 	if(!vm.count("spacing")) a.spacing = 0;
 	a.generatePage = (!vm.count("generate-page")) ? false : true;
 	if(!vm.count("spacing-by-diagonal-fraction")) a.diagonalFraction = 0;
@@ -285,8 +288,9 @@ void printArguments(Arguments &a){
 			++i;
 		}
 		cout << "outdir:            \t" << a.outdir << endl;
+        cout << "unit-scale:        \t" << a.unitScale << endl;
         cout << "global-shift:      \t" << a.globalShift[0] << " " << a.globalShift [1] << " " << a.globalShift [2] << endl;
-		cout << "spacing:           \t" << a.spacing << endl;
+        cout << "spacing:           \t" << a.spacing << endl;
 		cout << "diagonal-fraction: \t" << a.diagonalFraction << endl;
 		cout << "levels:            \t" << a.levels << endl;
 		cout << "format:            \t" << a.format << endl;
@@ -357,8 +361,9 @@ int main(int argc, char **argv){
 
 		PotreeConverter pc(a.outdir, a.source);
 
+        pc.unitScale = a.unitScale;
         pc.globalShift = a.globalShift;
-		pc.spacing = a.spacing;
+        pc.spacing = a.spacing;
 		pc.diagonalFraction = a.diagonalFraction;
 		pc.maxDepth = a.levels;
 		pc.format = a.format;

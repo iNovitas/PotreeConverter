@@ -21,7 +21,7 @@ public:
 	unsigned char returnNumber = 0;
 	unsigned char numberOfReturns = 0;
 	unsigned short pointSourceID = 0;
-    double time = 0.;
+    double timestamp = 0.;
 
 
 	Point() = default;
@@ -47,8 +47,11 @@ public:
 		return output;            
 	}
 
-    void shift (const Vector3<double> &shift)
-    {
+    void scale (double scale){
+        position = position * scale;
+    }
+
+    void shift (const Vector3<double> &shift){
         position = position - shift;
     }
 

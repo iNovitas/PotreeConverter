@@ -121,8 +121,8 @@ void PotreeConverter::prepare(){
 			pointAttributes.add(PointAttribute::INTENSITY);
 		}else if(attribute == "CLASSIFICATION"){
 			pointAttributes.add(PointAttribute::CLASSIFICATION);
-        }else if (attribute == "TIME"){
-            pointAttributes.add (PointAttribute::TIME);
+        }else if (attribute == "TIMESTAMP"){
+            pointAttributes.add (PointAttribute::TIMESTAMP);
 		}else if(attribute == "NORMAL"){
 			pointAttributes.add(PointAttribute::NORMAL_OCT16);
 		}
@@ -141,8 +141,9 @@ AABB PotreeConverter::calculateAABB(){
 			PointReader *reader = createPointReader(source, pointAttributes);
 			
 			AABB lAABB = reader->getAABB();
+            lAABB.scale (unitScale);
             lAABB.shift (globalShift);
-			aabb.update(lAABB.min);
+            aabb.update(lAABB.min);
 			aabb.update(lAABB.max);            
 
 			reader->close();
@@ -392,8 +393,9 @@ void PotreeConverter::convert(){
 		PointReader *reader = createPointReader(source, pointAttributes);
 
         AABB bb = reader->getAABB ();
+        bb.scale (this->unitScale);
         bb.shift (this->globalShift);
-		boundingBoxes.push_back(bb);
+        boundingBoxes.push_back(bb);
 		numPoints.push_back(reader->numPoints());
 		sourceFilenames.push_back(fs::path(source).filename().string());
 
@@ -409,8 +411,9 @@ void PotreeConverter::convert(){
 			pointsProcessed++;
 
 			Point p = reader->getPoint();
+            p.scale (unitScale);
             p.shift (globalShift);
-			writer->add(p);
+            writer->add(p);
 
 			if((pointsProcessed % (1'000'000)) == 0){
 				writer->processStore();

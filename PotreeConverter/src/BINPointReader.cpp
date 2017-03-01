@@ -107,9 +107,9 @@ bool BINPointReader::readNextPoint(){
 			}else if(attribute == PointAttribute::CLASSIFICATION){
 				unsigned char* ucBuffer = reinterpret_cast<unsigned char*>(buffer+offset);
 				point.classification = ucBuffer[0];
-			}else if (attribute == PointAttribute::TIME){
+			}else if (attribute == PointAttribute::TIMESTAMP){
                 double* ucBuffer = reinterpret_cast<double*>(buffer + offset);
-                point.time = ucBuffer [0];
+                point.timestamp = ucBuffer [0];
             }else if(attribute == PointAttribute::NORMAL_SPHEREMAPPED){
 				// see http://aras-p.info/texts/CompactNormalStorage.html
 				unsigned char* ucBuffer = reinterpret_cast<unsigned char*>(buffer+offset);

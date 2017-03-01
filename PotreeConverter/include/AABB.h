@@ -68,8 +68,12 @@ public:
 		size = max - min;
 	}
 
-    void shift (const Vector3<double> &shift)
-    {
+    void scale (double scale){
+        min = min * scale;
+        max = max * scale;
+    }
+
+    void shift (const Vector3<double> &shift){
         min = min - shift;
         max = max - shift;
     }

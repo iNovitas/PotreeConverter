@@ -86,6 +86,10 @@ public:
 		return Vector3<T>(x / a, y / a, z / a);
 	}
 
+    Vector3<T> operator*(const T &a) const{
+        return Vector3<T> (x * a, y * a, z * a);
+    }
+
 	friend ostream &operator<<( ostream &output,  const Vector3<T> &value ){ 
 		output << "[" << value.x << ", " << value.y << ", " << value.z << "]" ;
 		return output;            

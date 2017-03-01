@@ -34,8 +34,9 @@ private:
 	void generatePage(string name);
 
 public:
+    double unitScale;
     Vector3<double> globalShift;
-	float spacing;
+    float spacing;
 	int maxDepth;
 	string format;
 	OutputFormat outputFormat;

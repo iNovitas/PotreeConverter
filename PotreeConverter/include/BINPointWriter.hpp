@@ -68,8 +68,11 @@ public:
 				writer->write((const char*)&point.intensity, sizeof(unsigned short));
 			}else if(attribute == PointAttribute::CLASSIFICATION){
 				writer->write((const char*)&point.classification, sizeof(unsigned char));
-			}else if (attribute == PointAttribute::TIME){
-                writer->write ((const char*)&time, sizeof (double));
+			}else if (attribute == PointAttribute::TIMESTAMP){
+                uint32_t timestamp = (uint32_t)(point.timestamp / 0.01);
+                writer->write ((const char*)&timestamp, sizeof (uint32_t));
+                //float timestamp = (float)(point.timestamp);
+                //writer->write ((const char*)&timestamp, sizeof (float));
             }else if(attribute == PointAttribute::NORMAL_SPHEREMAPPED){
 				// see http://aras-p.info/texts/CompactNormalStorage.html
 				float nx = point.normal.x;
